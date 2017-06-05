@@ -16,11 +16,10 @@ class BatteriesController extends Controller
      */
     public function indexAction(EntityManagerInterface $em)
     {
-        $data = $em->getRepository('AppBundle:BatterySubmit')
-                   ->findAllCountByType();;
+        $data = $em->getRepository(BatterySubmit::class)
+                   ->findAllCountByType();
 
         return $this->render('batteries/index.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
             'data' => $data
         ]);
     }
@@ -28,26 +27,13 @@ class BatteriesController extends Controller
     /**
      * @Route("/batteries/form/", name="batteries/form")
      */
-    public function formAction()
+    public function formAction(Request $request)
     {
         $batterySubmit = new BatterySubmit();
         $form = $this->createForm(BatterySubmitType::class, $batterySubmit, array(
-            'action' => $this->generateUrl('batteries/submit')
+            'action' => $this->generateUrl('batteries/form')
         ));
 
-        return $this->render('batteries/form.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
-            'form' => $form->createView()
-        ]);
-    }
-
-    /**
-     * @Route("/batteries/submit/", name="batteries/submit")
-     */
-    public function submitAction(Request $request)
-    {
-        $batterySubmit = new BatterySubmit();
-        $form = $this->createForm(BatterySubmitType::class, $batterySubmit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) { 
@@ -56,8 +42,10 @@ class BatteriesController extends Controller
             $em->persist($batterySubmit);
             $em->flush();
             return $this->redirectToRoute('batteries');
-        } else {
-            return $this->redirectToRoute('batteries/form');
         }
+
+        return $this->render('batteries/form.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }
