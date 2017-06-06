@@ -18,6 +18,7 @@ class BatterySubmitRepository extends EntityRepository
 
       $em = $this->getEntityManager();
 
+//todo: $qb = $this->createQueryBuilder('bs');  -- then 1 lines are not needed: to get entity manager and "from" statement
       $qb = $em->createQueryBuilder()
                ->select('sum(bs.count) AS total', 'bs.type')
                ->groupBy('bs.type')
