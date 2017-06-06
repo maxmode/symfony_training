@@ -30,6 +30,7 @@ class BatteriesController extends Controller
     public function formAction(Request $request)
     {
         $batterySubmit = new BatterySubmit();
+        //todo: try to set null as $batterySubmit - form will generate entity for you. Also "action" by default is current page, which is fine in our case - no need to override it 
         $form = $this->createForm(BatterySubmitType::class, $batterySubmit, array(
             'action' => $this->generateUrl('batteries/form')
         ));
